@@ -1,0 +1,4 @@
+/config.sh
+/*.progress
+/images/ClassicPress-release-banner-*.png
+!/images/ClassicPress-release-banner-template.png
