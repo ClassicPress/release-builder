@@ -146,7 +146,7 @@ wait_cmd 'release-banner' \
 	-pointsize 90 \
 	-fill 'rgb(255,255,255)' \
 	-gravity center \
-	-annotate +0+264 'Version 1.1.1 available now!' \
+	-annotate +0+264 "Version $VERSION available now!" \
 	"images/ClassicPress-release-banner-v$VERSION.png"
 
 wait_action 'release-changelog-forums-draft' \
