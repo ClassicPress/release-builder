@@ -100,11 +100,13 @@ token_quote() {
 
 already_done() {
 	ACTION="$1"
+	PROGRESS_OUTPUT="$2"
 	[ -z "$ACTION" ] && echo 0 && return
 	echo "[[$ACTION]]" >&2
 	[ ! -f "$PROGRESS_FILE" ] && echo 0 && return
 	if grep -Pq "^$ACTION(\$|=)" "$PROGRESS_FILE"; then
 		echo "[[$ACTION: already done!]]" >&2
+		[ ! -z "$PROGRESS_OUTPUT" ] && echo "$PROGRESS_OUTPUT" >&2
 		echo >&2
 		echo 1
 	else
@@ -115,9 +117,14 @@ already_done() {
 wait_impl() {
 	TYPE="$1"
 	shift
+	PROGRESS_OUTPUT=
+	if [[ "$1" = "[["* ]]; then
+		PROGRESS_OUTPUT="$1"
+		shift
+	fi
 	ACTION="$1"
 	shift
-	if [ $(already_done "$ACTION") = 1 ]; then
+	if [ $(already_done "$ACTION" "$PROGRESS_OUTPUT") = 1 ]; then
 		if [ "$TYPE" = input ]; then
 			# Restore previous value
 			progress_line=$(grep -Pq "^$ACTION=" "$PROGRESS_FILE")
@@ -147,6 +154,7 @@ wait_impl() {
 			echo "$i"
 			;;
 	esac
+	[ ! -z "$PROGRESS_OUTPUT" ] && echo "$PROGRESS_OUTPUT" >&2
 	echo >&2
 	if [ "$TYPE" = input ]; then
 		echo "$ACTION=$i" >> "$PROGRESS_FILE"
@@ -173,7 +181,9 @@ wait_input() {
 ###
 
 # Do this before any other `cd` commands
-wait_cmd 'release-banner' \
+wait_cmd \
+	"[[release-banner: images/ClassicPress-release-banner-v$VERSION.png]]" \
+	'release-banner' \
 	convert images/ClassicPress-release-banner-template.png \
 	-font images/source-sans-pro/SourceSansPro-Regular.otf \
 	-pointsize 90 \
