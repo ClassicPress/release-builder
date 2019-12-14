@@ -141,7 +141,7 @@ wait_action() {
 # Main program logic
 ###
 
-# Do this before any `cd` commands
+# Do this before any other `cd` commands
 wait_cmd 'release-banner' \
 	convert images/ClassicPress-release-banner-template.png \
 	-font images/source-sans-pro/SourceSansPro-Regular.otf \
@@ -150,6 +150,7 @@ wait_cmd 'release-banner' \
 	-gravity center \
 	-annotate +0+264 "Version $VERSION available now!" \
 	"images/ClassicPress-release-banner-v$VERSION.png"
+echo "[[release-banner: images/ClassicPress-release-banner-v$VERSION.png]]"
 
 wait_action 'release-changelog-forums-draft' \
 	'Prepare the release changelog on the forums:' \
