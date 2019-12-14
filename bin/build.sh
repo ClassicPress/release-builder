@@ -103,7 +103,7 @@ already_done() {
 	[ -z "$ACTION" ] && echo 0 && return
 	echo "[[$ACTION]]" >&2
 	[ ! -f "$PROGRESS_FILE" ] && echo 0 && return
-	if grep -Pq "^$ACTION\$" "$PROGRESS_FILE"; then
+	if grep -Pq "^$ACTION(\$|=)" "$PROGRESS_FILE"; then
 		echo "[[$ACTION: already done!]]" >&2
 		echo >&2
 		echo 1
@@ -112,28 +112,59 @@ already_done() {
 	fi
 }
 
-wait_cmd() {
+wait_impl() {
+	TYPE="$1"
+	shift
 	ACTION="$1"
 	shift
-	[ $(already_done "$ACTION") = 1 ] && return
-	echo -n "\$ $(token_quote "$@")" >&2
-	read i
-	eval "$(token_quote "$@")"
+	if [ $(already_done "$ACTION") = 1 ]; then
+		if [ "$TYPE" = input ]; then
+			# Restore previous value
+			progress_line=$(grep -Pq "^$ACTION=" "$PROGRESS_FILE")
+			echo "$progress_line" | cut -d= -f2-
+		fi
+		return
+	fi
+	case $TYPE in
+		cmd)
+			echo -n "\$ $(token_quote "$@")" >&2
+			read i
+			eval "$(token_quote "$@")"
+			;;
+		action)
+			for msg in "$@"; do
+				echo "> $msg" >&2
+			done
+			echo -n '> ' >&2
+			read i
+			;;
+		input)
+			for msg in "$@"; do
+				echo "> $msg" >&2
+			done
+			echo -n '= ' >&2
+			read i
+			echo "$i"
+			;;
+	esac
 	echo >&2
-	echo "$ACTION" >> "$PROGRESS_FILE"
+	if [ "$TYPE" = input ]; then
+		echo "$ACTION=$i" >> "$PROGRESS_FILE"
+	else
+		echo "$ACTION" >> "$PROGRESS_FILE"
+	fi
+}
+
+wait_cmd() {
+	wait_impl cmd "$@"
 }
 
 wait_action() {
-	ACTION="$1"
-	shift
-	[ $(already_done "$ACTION") = 1 ] && return
-	for msg in "$@"; do
-		echo "> $msg" >&2
-	done
-	echo -n '> ' >&2
-	read i
-	echo >&2
-	echo "$ACTION" >> "$PROGRESS_FILE"
+	wait_impl action "$@"
+}
+
+wait_input() {
+	wait_impl input "$@"
 }
 
 
@@ -150,12 +181,13 @@ wait_cmd 'release-banner' \
 	-gravity center \
 	-annotate +0+264 "Version $VERSION available now!" \
 	"images/ClassicPress-release-banner-v$VERSION.png"
-echo "[[release-banner: images/ClassicPress-release-banner-v$VERSION.png]]"
 
-wait_action 'release-changelog-forums-draft' \
-	'Prepare the release changelog on the forums:' \
-	'https://forums.classicpress.net/c/announcements/release-notes' \
-	"$DRAFT_SUBFORUM_URL"
+CHANGELOG_FORUMS_DRAFT=$(
+	wait_input 'release-changelog-forums-draft' \
+		'Prepare the release changelog on the forums:' \
+		'https://forums.classicpress.net/c/announcements/release-notes' \
+		"$DRAFT_SUBFORUM_URL"
+)
 
 wait_cmd '' \
 	cd "$CP_CORE_PATH"
@@ -283,7 +315,7 @@ It is **available now** - use the \"**Source code** (zip)\" file below.
 
 ## More information
 
-- [Release announcement post](LINK TO RELEASE POST ON FORUMS)
+- [Release announcement post]($CHANGELOG_FORUMS_DRAFT)
 - Full changelog: $GITHUB_URL_CORE/compare/$LAST_VERSION+dev...$VERSION+dev"
 
 wait_action 'release-changelog-forums-publish' \
