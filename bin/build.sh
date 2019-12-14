@@ -23,6 +23,8 @@ cd ..
 
 VERSION="$1"
 LAST_VERSION="$2"
+RELEASE_TYPE="release"
+[ "$3" = hotfix ] && RELEASE_TYPE="hotfix"
 GITHUB_URL_CORE="https://github.com/ClassicPress/ClassicPress"
 GITHUB_URL_RELEASE="https://github.com/ClassicPress/ClassicPress-release"
 
@@ -42,7 +44,7 @@ for v in \
 	if [ -z "${!v}" ]; then
 		echo "$v variable not set!" >&2
 		if [[ "$v" = *VERSION* ]]; then
-			echo "Usage : $0 CURRENT_VERSION LAST_VERSION" >&2
+			echo "Usage : $0 CURRENT_VERSION LAST_VERSION [hotfix]" >&2
 			echo "See   : $GITHUB_URL_RELEASE/releases" >&2
 		fi
 		exit 1
@@ -165,7 +167,7 @@ wait_cmd 'dev-update-develop' \
 	git checkout origin/develop -B develop
 
 wait_cmd 'dev-release-start' \
-	git flow release start $VERSION+dev --showcommands
+	git flow $RELEASE_TYPE start $VERSION+dev --showcommands
 
 wait_action 'dev-security-fixes' \
 	'if there are any security fixes, backport them now (in a new shell)' \
@@ -185,7 +187,7 @@ wait_cmd 'dev-release-finish' \
 	GIT_COMMITTER_EMAIL='releases@classicpress.net' \
 	GIT_AUTHOR_NAME='ClassicPress Releases' \
 	GIT_AUTHOR_EMAIL='releases@classicpress.net' \
-	git flow release finish -u "$GPG_KEY_ID" --showcommands \
+	git flow $RELEASE_TYPE finish -u "$GPG_KEY_ID" --showcommands \
 	$VERSION+dev -m 'Source code for release'
 
 wait_cmd 'dev-release-push' \
@@ -234,7 +236,7 @@ wait_cmd 'release-git-status' \
 wait_cmd 'release-git-stash' \
 	git stash
 wait_cmd 'release-start' \
-	git flow release start $VERSION --showcommands
+	git flow $RELEASE_TYPE start $VERSION --showcommands
 wait_cmd 'release-git-stash-pop' \
 	git stash pop
 wait_cmd 'release-git-add' \
@@ -249,7 +251,7 @@ wait_cmd 'release-finish' \
 	GIT_COMMITTER_EMAIL='releases@classicpress.net' \
 	GIT_AUTHOR_NAME='ClassicPress Releases' \
 	GIT_AUTHOR_EMAIL='releases@classicpress.net' \
-	git flow release finish -u "$GPG_KEY_ID" --showcommands \
+	git flow $RELEASE_TYPE finish -u "$GPG_KEY_ID" --showcommands \
 	"$VERSION" -m 'Release'
 
 wait_cmd 'release-push' \
