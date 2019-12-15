@@ -127,7 +127,7 @@ wait_impl() {
 	if [ $(already_done "$ACTION" "$PROGRESS_OUTPUT") = 1 ]; then
 		if [ "$TYPE" = input ]; then
 			# Restore previous value
-			progress_line=$(grep -Pq "^$ACTION=" "$PROGRESS_FILE")
+			progress_line=$(grep -P "^$ACTION=" "$PROGRESS_FILE")
 			echo "$progress_line" | cut -d= -f2-
 		fi
 		return
