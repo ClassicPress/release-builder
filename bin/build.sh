@@ -237,7 +237,7 @@ wait_cmd 'dev-release-push' \
 	git push origin develop master $VERSION+dev
 
 wait_action 'dev-release-inspect-changelog' \
-	'Inspect the release changelog:' \
+	'Inspect the dev release changelog and diff:' \
 	"$GITHUB_URL_CORE/compare/$LAST_VERSION+dev...$VERSION+dev"
 
 wait_action 'dev-release-edit' \
@@ -299,6 +299,10 @@ wait_cmd 'release-finish' \
 
 wait_cmd 'release-push' \
 	git push origin develop master "$VERSION"
+
+wait_action 'release-inspect-changelog' \
+	'Inspect the final release changelog and diff:' \
+	"$GITHUB_URL_RELEASE/compare/$LAST_VERSION...$VERSION"
 
 wait_cmd 'update-api-test' \
 	ssh classicpress_api-v1_api-v1-test \
