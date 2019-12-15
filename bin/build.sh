@@ -305,7 +305,7 @@ wait_action 'release-inspect-changelog' \
 	"$GITHUB_URL_RELEASE/compare/$LAST_VERSION...$VERSION"
 
 wait_cmd 'update-api-test' \
-	ssh classicpress_api-v1_api-v1-test \
+	ssh classicpress.api-v1_api-v1-test \
 	/www/src/ClassicPress-APIs_api-v1-test/v1-upgrade-generator/update.sh
 
 wait_action 'release-test' \
@@ -337,7 +337,7 @@ wait_action 'release-changelog-forums-publish' \
 	"$DRAFT_SUBFORUM_URL"
 
 wait_cmd 'update-api-production' \
-	ssh classicpress_api-v1_api-v1 \
+	ssh classicpress.api-v1_api-v1 \
 	/www/src/ClassicPress-APIs_api-v1/v1-upgrade-generator/update.sh
 
 wait_action 'release-announcement-slack' \
