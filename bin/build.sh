@@ -44,7 +44,7 @@ for v in \
 	if [ -z "${!v}" ]; then
 		echo "$v variable not set!" >&2
 		if [[ "$v" = *VERSION* ]]; then
-			echo "Usage : $0 CURRENT_VERSION LAST_VERSION [hotfix]" >&2
+			echo "Usage : $0 NEW_VERSION LAST_VERSION [hotfix]" >&2
 			echo "See   : $GITHUB_URL_RELEASE/releases" >&2
 		fi
 		exit 1
@@ -192,11 +192,12 @@ wait_cmd \
 	-annotate +0+264 "Version $VERSION available now!" \
 	"images/ClassicPress-release-banner-v$VERSION.png"
 
-CHANGELOG_FORUMS_DRAFT=$(
+FORUMS_RELEASE_POST_URL=$(
 	wait_input 'release-changelog-forums-draft' \
 		'Prepare the release changelog on the forums:' \
-		'https://forums.classicpress.net/c/announcements/release-notes' \
-		"$DRAFT_SUBFORUM_URL"
+		'Previous releases   : https://forums.classicpress.net/c/announcements/release-notes' \
+		"Changelog URL       : $GITHUB_URL_CORE/compare/$LAST_VERSION+dev...$VERSION+dev" \
+		"New draft goes here : $DRAFT_SUBFORUM_URL"
 )
 
 wait_cmd '' \
@@ -217,7 +218,9 @@ wait_action 'dev-security-fixes' \
 	'e.g. `git commit` or `bin/backport-wp-commit.sh -c XXXX`'
 
 wait_action 'dev-version-bump' \
-	'bump version in package.json and src/wp-includes/version.php'
+	"update version to $VERSION+dev and save (do not commit):" \
+	'- in package.json (line 3)' \
+	'- in src/wp-includes/version.php (line 30)'
 
 wait_cmd 'dev-version-git-add' \
 	git add package.json src/wp-includes/version.php
@@ -329,12 +332,12 @@ It is **available now** - use the \"**Source code** (zip)\" file below.
 
 ## More information
 
-- [Release announcement post]($CHANGELOG_FORUMS_DRAFT)
+- [Release announcement post]($FORUMS_RELEASE_POST_URL)
 - Full changelog: $GITHUB_URL_CORE/compare/$LAST_VERSION+dev...$VERSION+dev"
 
 wait_action 'release-changelog-forums-publish' \
 	'Publish the release changelog on the forums:' \
-	"$DRAFT_SUBFORUM_URL"
+	"$FORUMS_RELEASE_POST_URL"
 
 wait_cmd 'update-api-production' \
 	ssh classicpress.api-v1_api-v1 \
@@ -342,7 +345,7 @@ wait_cmd 'update-api-production' \
 
 wait_action 'release-announcement-slack' \
 	'Drop a note in the #announcements channel on Slack:' \
-	"ClassicPress version \`$VERSION\` is now available for automatic updates and new installations: (FORUM POST URL)"
+	"ClassicPress version \`$VERSION\` is now available for automatic updates and new installations: $FORUMS_RELEASE_POST_URL"
 
 wait_action 'release-changelog-forums-update-previous' \
 	'https://forums.classicpress.net/c/announcements/release-notes' \
@@ -354,3 +357,5 @@ wait_action 'release-changelog-github-verify' \
 	'Double-check the GitHub post to make sure everything looks OK' \
 	'(all links work, etc.)' \
 	"$GITHUB_URL_RELEASE/releases/tag/$VERSION"
+
+echo "RELEASE COMPLETE!"
