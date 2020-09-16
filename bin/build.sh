@@ -266,6 +266,8 @@ wait_cmd 'dev-checkout' \
 	git checkout $VERSION+dev
 wait_cmd 'dev-rm-build' \
 	rm -rf node_modules/ build/
+wait_cmd 'dev-nvm-install' \
+	nvm install
 wait_cmd 'dev-nvm-use' \
 	nvm use
 wait_cmd 'dev-npm-install' \
