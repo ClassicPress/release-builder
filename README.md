@@ -4,12 +4,17 @@ This script prepares most parts of a new ClassicPress release.
 
 ## How to use
 
+**You must be running Linux**. This script will not work with OS X as it is
+currently written due to usage of `grep -P`, `sed -r`, and perhaps other
+commands/flags.
+
 You'll need the following programs installed on your computer:
 
 - `git`
 - `nvm`: https://github.com/nvm-sh/nvm
 - `convert` (part of https://imagemagick.org/)
 - `git flow`: https://github.com/nvie/gitflow/wiki/Installation
+- `gpg`
 
 Copy `sample-config.sh` to `config.sh` and fill in the values.  In order to do
 an official ClassicPress release, you'll need the correct key registered with
