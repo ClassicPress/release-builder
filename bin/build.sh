@@ -335,9 +335,9 @@ wait_action 'release-changelog-github' \
 	"  ClassicPress $VERSION" \
 	'Body:' \
 	"
-**ClassicPress \`$VERSION\`** is (A SENTENCE OR TWO ABOUT THE RELEASE HERE)
+**ClassicPress \`$VERSION\`** is **available now** - use the \"**Source code** (zip)\" file below.
 
-It is **available now** - use the \"**Source code** (zip)\" file below.
+Here are the highlights from this release:
 
 ## Major changes since ClassicPress \`$LAST_VERSION\`
 
@@ -345,8 +345,9 @@ It is **available now** - use the \"**Source code** (zip)\" file below.
 
 ## More information
 
-- [Release announcement post]($FORUMS_RELEASE_POST_URL)
-- Full changelog: $GITHUB_URL_CORE/compare/$LAST_VERSION+dev...$VERSION+dev"
+See the **[release announcement post]($FORUMS_RELEASE_POST_URL)** on our forums for more details, or have a look at the full changelog here on GitHub:
+
+$GITHUB_URL_CORE/compare/$LAST_VERSION+dev...$VERSION+dev"
 
 wait_action 'release-changelog-forums-publish' \
 	'Publish the release changelog on the forums:' \
