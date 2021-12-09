@@ -343,9 +343,9 @@ wait_action 'release-changelog-github' \
 
 Here are the highlights from this release:
 
-## Major changes since ClassicPress \`$LAST_VERSION\`
+## Notable changes since ClassicPress \`$LAST_VERSION\`
 
-(COPY MAJOR CHANGES FROM FORUM POST)
+(COPY NOTABLE CHANGES FROM FORUM POST)
 
 ## More information
 
