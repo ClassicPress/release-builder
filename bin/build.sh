@@ -258,6 +258,9 @@ wait_action 'dev-release-inspect-changelog' \
 wait_action 'dev-release-edit' \
 	'Edit source release on GitHub:' \
 	"$GITHUB_URL_CORE/releases/new?tag=$VERSION%2Bdev" \
+	'Use the "Auto-generate release notes" button, but only COPY the resulting text' \
+	'and do not leave it there since this is the DEV repository! Edit as follows:' \
+	'' \
     'Title:' \
 	"  This is not the $VERSION release!" \
 	'Body:' \
