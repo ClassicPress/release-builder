@@ -213,9 +213,10 @@ wait_cmd 'dev-update-develop' \
 wait_cmd 'dev-release-start' \
 	git flow $RELEASE_TYPE start $VERSION+dev --showcommands
 
-wait_action 'dev-security-fixes' \
-	'if there are any security fixes, backport them now (in a new shell)' \
-	'e.g. `git commit` or `bin/backport-wp-commit.sh -c XXXX`'
+wait_action 'dev-apply-fixes' \
+	'if there are any security fixes or bugfixes (for a hotfix release not' \
+	'based on the `develop` branch), backport them now (in a new shell)' \
+	'e.g. `git cherry-pick abcde` or `bin/backport-wp-commit.sh -c 12345`'
 
 wait_cmd 'dev-version-bump-package-json' \
 	sed -ri \
