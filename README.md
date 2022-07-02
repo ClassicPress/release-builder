@@ -13,7 +13,7 @@ You'll need the following programs installed on your computer:
 - `git`
 - `nvm`: https://github.com/nvm-sh/nvm
 - `convert` (part of https://imagemagick.org/)
-- `git flow`: https://github.com/nvie/gitflow/wiki/Installation
+- `git flow`: https://github.com/petervanderdoes/gitflow-avh ([Homebrew](https://formulae.brew.sh/formula/git-flow-avh))
 - `gpg`
 
 Copy `sample-config.sh` to `config.sh` and fill in the values.  In order to do
