@@ -4,9 +4,8 @@ This script prepares most parts of a new ClassicPress release.
 
 ## How to use
 
-**You must be running Linux**. This script will not work with OS X as it is
-currently written due to usage of `grep -P`, `sed -r`, and perhaps other
-commands/flags.
+**This script supports Linux and MacOS**. To work with MacOS it is recommended to use
+[Homebrew](https://brew.sh/) and necessary to install `gnu-sed` .
 
 You'll need the following programs installed on your computer:
 
@@ -15,6 +14,7 @@ You'll need the following programs installed on your computer:
 - `convert` (part of https://imagemagick.org/)
 - `git flow`: https://github.com/petervanderdoes/gitflow-avh ([Homebrew](https://formulae.brew.sh/formula/git-flow-avh))
 - `gpg`
+- `gnu-sed`: https://formulae.brew.sh/formula/gnu-sed (**MacOS only**)
 
 Copy `sample-config.sh` to `config.sh` and fill in the values.  In order to do
 an official ClassicPress release, you'll need the correct key registered with

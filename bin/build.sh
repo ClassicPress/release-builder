@@ -8,6 +8,15 @@
 # Exit on error
 set -e
 
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+	SED_COMMAND="sed"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+	SED_COMMAND="gsed"
+else
+	echo "Sorry, this script hasn't been tested on your OS platform"
+	exit 1
+fi
+
 # Change to root directory of this repository
 cd "$(dirname "$0")"
 cd ..
@@ -104,7 +113,7 @@ already_done() {
 	[ -z "$ACTION" ] && echo 0 && return
 	echo "[[$ACTION]]" >&2
 	[ ! -f "$PROGRESS_FILE" ] && echo 0 && return
-	if grep -Pq "^$ACTION(\$|=)" "$PROGRESS_FILE"; then
+	if grep -Eq "^$ACTION(\$|=)" "$PROGRESS_FILE"; then
 		echo "[[$ACTION: already done!]]" >&2
 		[ ! -z "$PROGRESS_OUTPUT" ] && echo "$PROGRESS_OUTPUT" >&2
 		echo >&2
@@ -127,7 +136,7 @@ wait_impl() {
 	if [ $(already_done "$ACTION" "$PROGRESS_OUTPUT") = 1 ]; then
 		if [ "$TYPE" = input ]; then
 			# Restore previous value
-			progress_line=$(grep -P "^$ACTION=" "$PROGRESS_FILE")
+			progress_line=$(grep -E "^$ACTION=" "$PROGRESS_FILE")
 			echo "$progress_line" | cut -d= -f2-
 		fi
 		return
@@ -219,12 +228,12 @@ wait_action 'dev-apply-fixes' \
 	'e.g. `git cherry-pick abcde` or `bin/backport-wp-commit.sh -c 12345`'
 
 wait_cmd 'dev-version-bump-package-json' \
-	sed -ri \
+	$SED_COMMAND -ri \
 	"s#^(\s+\"version\": )\"[^\"]+\",\$#\\1\"$VERSION+dev\",#" \
 	package.json
 
 wait_cmd 'dev-version-bump-version-php' \
-	sed -ri \
+	$SED_COMMAND -ri \
 	"s#^(\\\$cp_version = )'[^\']+';\$#\\1'$VERSION+dev';#" \
 	src/wp-includes/version.php
 
