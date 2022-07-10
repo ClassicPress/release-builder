@@ -64,7 +64,7 @@ for v in \
 	fi
 done
 
-for p in git nvm convert; do
+for p in git nvm convert $SED_COMMAND; do
 	if ! type -t $p > /dev/null; then
 		echo "Program/function \`$p\` not found, make sure it is installed!" >&2
 		exit 1
