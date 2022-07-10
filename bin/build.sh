@@ -293,7 +293,7 @@ wait_cmd 'release-update-develop' \
 wait_cmd '' \
 	cd "$CP_CORE_PATH/build"
 wait_cmd 'release-cp-gitdir' \
-	cp -vaR "$CP_RELEASE_PATH/.git/" ./
+	cp -vaR "$CP_RELEASE_PATH/.git" ./
 wait_cmd 'release-git-status' \
 	git status
 wait_cmd 'release-git-stash' \
