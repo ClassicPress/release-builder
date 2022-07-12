@@ -10,4 +10,4 @@ CP_RELEASE_PATH="$HOME/cp/ClassicPress-release"
 GPG_KEY_ID="ABCD1234"
 
 # The subforum where the release draft should be posted
-DRAFT_SUBFORUM_URL="https://forums.classicpress.net/c/internal/scheduled-topics"
+DRAFT_SUBFORUM_URL="https://forums.classicpress.net/c/meta/scheduled-topics"
