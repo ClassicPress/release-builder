@@ -11,3 +11,9 @@ GPG_KEY_ID="ABCD1234"
 
 # The subforum where the release draft should be posted
 DRAFT_SUBFORUM_URL="https://forums.classicpress.net/c/meta/scheduled-topics"
+
+# The ClassicPress API Host name from your .ssh/config file
+CP_API=""
+
+# The ClassicPress API Test Host name from your .ssh/config file
+CP_API_TEST=""

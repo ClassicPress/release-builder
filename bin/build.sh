@@ -46,6 +46,8 @@ for v in \
 	CP_CORE_PATH \
 	CP_RELEASE_PATH \
 	GPG_KEY_ID \
+	CP_API \
+	CP_API_TEST \
 	DRAFT_SUBFORUM_URL \
 	VERSION \
 	LAST_VERSION \
@@ -334,7 +336,7 @@ wait_action 'release-inspect-changelog' \
 	"$GITHUB_URL_RELEASE/compare/$LAST_VERSION...$VERSION"
 
 wait_cmd 'update-api-test' \
-	ssh classicpress.api-v1_api-v1-test \
+	ssh $CP_API_TEST \
 	/www/src/ClassicPress-APIs_api-v1-test/v1-upgrade-generator/update.sh
 
 wait_action 'release-test' \
@@ -367,7 +369,7 @@ wait_action 'release-changelog-forums-publish' \
 	"$FORUMS_RELEASE_POST_URL"
 
 wait_cmd 'update-api-production' \
-	ssh classicpress.api-v1_api-v1 \
+	ssh $CP_API \
 	/www/src/ClassicPress-APIs_api-v1/v1-upgrade-generator/update.sh
 
 wait_action 'release-announcement-slack' \
