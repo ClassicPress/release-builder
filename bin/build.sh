@@ -234,6 +234,11 @@ wait_cmd 'dev-version-bump-package-json' \
 	"s#^(\s+\"version\": )\"[^\"]+\",\$#\\1\"$VERSION+dev\",#" \
 	package.json
 
+wait_cmd 'dev-version-bump-package-lock-json' \
+	$SED_COMMAND -ri \
+	"s#^(\s+\"version\": )\"[^\"]+(\+dev\"),\$#\\1\"$VERSION\2\,#" \
+	package-lock.json
+
 wait_cmd 'dev-version-bump-version-php' \
 	$SED_COMMAND -ri \
 	"s#^(\\\$cp_version = )'[^\']+';\$#\\1'$VERSION+dev';#" \
@@ -242,11 +247,11 @@ wait_cmd 'dev-version-bump-version-php' \
 git diff
 wait_action 'dev-version-inspect' \
 	"inspect above output:" \
-	"verify version updated to '$VERSION+dev' in package.json and version.php" \
+	"verify version updated to '$VERSION+dev' in package.json, package-lock.json and version.php" \
 	"with no other changes"
 
 wait_cmd 'dev-version-git-add' \
-	git add package.json src/wp-includes/version.php
+	git add package.json package-lock.json src/wp-includes/version.php
 
 wait_cmd 'dev-version-git-commit' \
 	git commit -m "Bump source version to $VERSION+dev"
