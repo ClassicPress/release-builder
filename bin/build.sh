@@ -293,7 +293,7 @@ wait_cmd 'dev-nvm-use' \
 wait_cmd 'dev-npm-install' \
 	npm install
 wait_cmd 'dev-npm-install-grunt' \
-	npm install -g grunt-cli
+	npm list grunt-cli || npm install -g grunt-cli
 wait_cmd 'release-build' \
 	CLASSICPRESS_RELEASE=true grunt build
 
