@@ -257,10 +257,10 @@ wait_cmd 'dev-version-git-commit' \
 	git commit -m "Bump source version to $VERSION+dev"
 
 wait_cmd 'dev-release-finish' \
-	GIT_COMMITTER_NAME='ClassicPress Releases' \
-	GIT_COMMITTER_EMAIL='releases@classicpress.net' \
-	GIT_AUTHOR_NAME='ClassicPress Releases' \
-	GIT_AUTHOR_EMAIL='releases@classicpress.net' \
+	GIT_COMMITTER_NAME='ClassyBot Releases' \
+	GIT_COMMITTER_EMAIL='bots@classicpress.net' \
+	GIT_AUTHOR_NAME='ClassyBot Releases' \
+	GIT_AUTHOR_EMAIL='bots@classicpress.net' \
 	git flow $RELEASE_TYPE finish -u "$GPG_KEY_ID" --showcommands \
 	$VERSION+dev -m 'Source code for release'
 
@@ -326,10 +326,10 @@ wait_cmd 'release-check-files' \
 	../bin/check-release-files.pl
 
 wait_cmd 'release-finish' \
-	GIT_COMMITTER_NAME='ClassicPress Releases' \
-	GIT_COMMITTER_EMAIL='releases@classicpress.net' \
-	GIT_AUTHOR_NAME='ClassicPress Releases' \
-	GIT_AUTHOR_EMAIL='releases@classicpress.net' \
+	GIT_COMMITTER_NAME='ClassyBot Releases' \
+	GIT_COMMITTER_EMAIL='bots@classicpress.net' \
+	GIT_AUTHOR_NAME='ClassyBot Releases' \
+	GIT_AUTHOR_EMAIL='bots@classicpress.net' \
 	git flow $RELEASE_TYPE finish -u "$GPG_KEY_ID" --showcommands \
 	"$VERSION" -m 'Release'
 
