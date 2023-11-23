@@ -216,8 +216,8 @@ wait_cmd '' \
 
 wait_cmd 'dev-fetch-origin' \
 	git fetch origin
-wait_cmd 'dev-update-master' \
-	git checkout origin/master -B master
+wait_cmd 'dev-update-main' \
+	git checkout origin/main -B main
 wait_cmd 'dev-update-develop' \
 	git checkout origin/develop -B develop
 
@@ -265,7 +265,7 @@ wait_cmd 'dev-release-finish' \
 	$VERSION+dev -m 'Source code for release'
 
 wait_cmd 'dev-release-push' \
-	git push origin develop master $VERSION+dev
+	git push origin develop main $VERSION+dev
 
 wait_action 'dev-release-inspect-changelog' \
 	'Inspect the dev release changelog and diff:' \
@@ -301,8 +301,8 @@ wait_cmd '' \
 	cd "$CP_RELEASE_PATH"
 wait_cmd 'release-fetch-origin' \
 	git fetch origin
-wait_cmd 'release-update-master' \
-	git checkout origin/master -B master
+wait_cmd 'release-update-main' \
+	git checkout origin/main -B main
 wait_cmd 'release-update-develop' \
 	git checkout origin/develop -B develop
 
@@ -334,7 +334,7 @@ wait_cmd 'release-finish' \
 	"$VERSION" -m 'Release'
 
 wait_cmd 'release-push' \
-	git push origin develop master "$VERSION"
+	git push origin develop main "$VERSION"
 
 wait_action 'release-inspect-changelog' \
 	'Inspect the final release changelog and diff:' \
