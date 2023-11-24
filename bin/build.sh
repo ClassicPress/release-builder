@@ -342,7 +342,7 @@ wait_action 'release-inspect-changelog' \
 
 wait_cmd 'update-api-test' \
 	ssh $CP_API_TEST \
-	/www/src/ClassicPress-APIs_api-v1-test/v1-upgrade-generator/update.sh
+	/var/www/html/ClassicPress-APIs-Test/v1-upgrade-generator/update.sh
 
 wait_action 'release-test' \
 	'Ask people to test the release now:' \
@@ -375,7 +375,7 @@ wait_action 'release-changelog-forums-publish' \
 
 wait_cmd 'update-api-production' \
 	ssh $CP_API \
-	/www/src/ClassicPress-APIs_api-v1/v1-upgrade-generator/update.sh
+	/var/www/html/ClassicPress-APIs/v1-upgrade-generator/update.sh
 
 wait_action 'release-announcement-slack' \
 	'Drop a note in the #announcements channel on Slack:' \
