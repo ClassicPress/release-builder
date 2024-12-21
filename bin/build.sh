@@ -45,6 +45,7 @@ GITHUB_URL_RELEASE="https://github.com/ClassicPress/ClassicPress-release"
 for v in \
 	CP_CORE_PATH \
 	CP_RELEASE_PATH \
+	CP_PUBLIC \
 	GPG_KEY_ID \
 	CP_API \
 	CP_API_TEST \
@@ -348,6 +349,10 @@ wait_action 'release-test' \
 	'Ask people to test the release now:' \
 	"$GITHUB_URL_RELEASE/archive/$VERSION.zip"
 
+wait_action 'update-staging-docs' \
+	'Update the staging docs site in a new shell:' \
+	"ssh $CP_PUBLIC /var/www/public/staging-docs.classicpress.net/public_html/update-docs.sh"
+
 wait_action 'release-changelog-github' \
 	'Edit release on GitHub:' \
 	"$GITHUB_URL_RELEASE/releases/new?tag=$VERSION" \
@@ -391,5 +396,10 @@ wait_action 'release-changelog-github-verify' \
 	'Double-check the GitHub post to make sure everything looks OK' \
 	'(all links work, etc.)' \
 	"$GITHUB_URL_RELEASE/releases/tag/$VERSION"
+
+wait_action 'update-staging-docs' \
+	'Update the main docs site in a new shell:' \
+	"ssh $CP_PUBLIC /var/www/public/docs.classicpress.net/public_html/update-docs.sh"
+
 
 echo "RELEASE COMPLETE!"
