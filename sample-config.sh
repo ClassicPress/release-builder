@@ -17,3 +17,6 @@ CP_API=""
 
 # The ClassicPress API Test Host name from your .ssh/config file
 CP_API_TEST=""
+
+# The ClassicPress Public Host name from your .ssh/config file
+CP_PUBLIC=""
