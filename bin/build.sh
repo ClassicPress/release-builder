@@ -196,7 +196,7 @@ wait_input() {
 wait_cmd \
 	"[[release-banner: images/ClassicPress-release-banner-v$VERSION.png]]" \
 	'release-banner' \
-	convert images/ClassicPress-release-banner-template.png \
+	magick images/ClassicPress-release-banner-template.png \
 	-font images/source-sans-pro/SourceSansPro-Regular.otf \
 	-pointsize 90 \
 	-fill 'rgb(255,255,255)' \
