@@ -397,7 +397,7 @@ wait_action 'release-changelog-github-verify' \
 	'(all links work, etc.)' \
 	"$GITHUB_URL_RELEASE/releases/tag/$VERSION"
 
-wait_action 'update-staging-docs' \
+wait_action 'update-docs' \
 	'Update the main docs site in a new shell:' \
 	"ssh $CP_PUBLIC /var/www/public/docs.classicpress.net/public_html/update-docs.sh"
 
