@@ -349,8 +349,12 @@ wait_action 'release-test' \
 	'Ask people to test the release now:' \
 	"$GITHUB_URL_RELEASE/archive/$VERSION.zip"
 
+wait_action 'update-staging-docs-site' \
+	'Test updating the test docs site to the new version of ClassicPress using the migration plugin' \
+	"$GITHUB_URL_RELEASE/archive/$VERSION.zip"
+
 wait_action 'update-staging-docs' \
-	'Update the staging docs site in a new shell:' \
+	'Test updating the staging docs site in a new shell:' \
 	"ssh $CP_PUBLIC /var/www/public/staging-docs.classicpress.net/public_html/update-docs.sh"
 
 wait_action 'release-changelog-github' \
@@ -382,8 +386,8 @@ wait_cmd 'update-api-production' \
 	ssh $CP_API \
 	/var/www/html/ClassicPress-APIs/v1-upgrade-generator/update.sh
 
-wait_action 'release-announcement-slack' \
-	'Drop a note in the #announcements channel on Slack:' \
+wait_action 'release-announcement-zulip' \
+	'Drop a note in the #announcements channel on Zulip:' \
 	"ClassicPress version \`$VERSION\` is now available for automatic updates and new installations: $FORUMS_RELEASE_POST_URL"
 
 wait_action 'release-changelog-forums-update-previous' \
@@ -397,9 +401,11 @@ wait_action 'release-changelog-github-verify' \
 	'(all links work, etc.)' \
 	"$GITHUB_URL_RELEASE/releases/tag/$VERSION"
 
+wait_action 'update-docs-site' \
+	'Update the docs site to the new version of ClassicPress using update process'
+
 wait_action 'update-docs' \
 	'Update the main docs site in a new shell:' \
 	"ssh $CP_PUBLIC /var/www/public/docs.classicpress.net/public_html/update-docs.sh"
-
 
 echo "RELEASE COMPLETE!"
