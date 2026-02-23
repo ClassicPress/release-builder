@@ -355,7 +355,7 @@ wait_action 'update-staging-docs-site' \
 
 wait_action 'update-staging-docs' \
 	'Test updating the staging docs site in a new shell:' \
-	"ssh $CP_PUBLIC /var/www/public/staging-docs.classicpress.net/public_html/update-docs.sh"
+	"ssh $CP_PUBLIC /var/www/public/staging-docs.classicpress.net/bin/update-docs.sh"
 
 wait_action 'release-changelog-github' \
 	'Edit release on GitHub:' \
@@ -406,6 +406,6 @@ wait_action 'update-docs-site' \
 
 wait_action 'update-docs' \
 	'Update the main docs site in a new shell:' \
-	"ssh $CP_PUBLIC /var/www/public/docs.classicpress.net/public_html/update-docs.sh"
+	"ssh $CP_PUBLIC /var/www/public/docs.classicpress.net/bin/update-docs.sh"
 
 echo "RELEASE COMPLETE!"
