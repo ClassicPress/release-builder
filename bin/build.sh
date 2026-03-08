@@ -74,8 +74,8 @@ for p in git nvm convert $SED_COMMAND; do
 	fi
 done
 
-if ! ( git flow 2>&1 | grep -q 'usage: git flow' ); then
-	echo '`git flow` not found, make sure it is installed!' >&2
+if ! ( git flow 2>&1 | grep -q 'git-flow-next' ); then
+	echo '`git-flow-next` not found, make sure it is installed!' >&2
 	exit 1
 fi
 
@@ -223,7 +223,7 @@ wait_cmd 'dev-update-develop' \
 	git checkout origin/develop -B develop
 
 wait_cmd 'dev-release-start' \
-	git flow $RELEASE_TYPE start $VERSION+dev --showcommands
+	git flow $RELEASE_TYPE start $VERSION+dev
 
 wait_action 'dev-apply-fixes' \
 	'if there are any security fixes or bugfixes (for a hotfix release not' \
@@ -262,7 +262,7 @@ wait_cmd 'dev-release-finish' \
 	GIT_COMMITTER_EMAIL='bots@classicpress.net' \
 	GIT_AUTHOR_NAME='ClassyBot Releases' \
 	GIT_AUTHOR_EMAIL='bots@classicpress.net' \
-	git flow $RELEASE_TYPE finish -u "$GPG_KEY_ID" --showcommands \
+	git flow $RELEASE_TYPE finish -u "$GPG_KEY_ID" \
 	$VERSION+dev -m 'Source code for release'
 
 wait_cmd 'dev-release-push' \
@@ -316,7 +316,7 @@ wait_cmd 'release-git-status' \
 wait_cmd 'release-git-stash' \
 	git stash
 wait_cmd 'release-start' \
-	git flow $RELEASE_TYPE start $VERSION --showcommands
+	git flow $RELEASE_TYPE start $VERSION
 wait_cmd 'release-git-stash-pop' \
 	git stash pop
 wait_cmd 'release-git-add' \
@@ -331,7 +331,7 @@ wait_cmd 'release-finish' \
 	GIT_COMMITTER_EMAIL='bots@classicpress.net' \
 	GIT_AUTHOR_NAME='ClassyBot Releases' \
 	GIT_AUTHOR_EMAIL='bots@classicpress.net' \
-	git flow $RELEASE_TYPE finish -u "$GPG_KEY_ID" --showcommands \
+	git flow $RELEASE_TYPE finish -u "$GPG_KEY_ID" \
 	"$VERSION" -m 'Release'
 
 wait_cmd 'release-push' \

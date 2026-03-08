@@ -12,7 +12,7 @@ You'll need the following programs installed on your computer:
 - `git`
 - `nvm`: https://github.com/nvm-sh/nvm
 - `convert` (part of https://imagemagick.org/)
-- `git flow`: https://github.com/petervanderdoes/gitflow-avh ([Homebrew](https://formulae.brew.sh/formula/git-flow-avh))
+- `git flow`: https://github.com/gittower/git-flow-next ([Homebrew](https://formulae.brew.sh/formula/git-flow-next))
 - `gpg`
 - `gnu-sed`: https://formulae.brew.sh/formula/gnu-sed (**MacOS only**)
 
