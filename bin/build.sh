@@ -34,6 +34,8 @@ VERSION="$1"
 LAST_VERSION="$2"
 RELEASE_TYPE="release"
 [ "$3" = hotfix ] && RELEASE_TYPE="hotfix"
+[ "$3" = dryrun ] && RUN_TYPE="dryrun"
+[ "$4" = dryrun ] && RUN_TYPE="dryrun"
 GITHUB_URL_CORE="https://github.com/ClassicPress/ClassicPress"
 GITHUB_URL_RELEASE="https://github.com/ClassicPress/ClassicPress-release"
 
@@ -56,7 +58,7 @@ for v in \
 	if [ -z "${!v}" ]; then
 		echo "$v variable not set!" >&2
 		if [[ "$v" = *VERSION* ]]; then
-			echo "Usage : $0 NEW_VERSION LAST_VERSION [hotfix]" >&2
+			echo "Usage : $0 NEW_VERSION LAST_VERSION [hotfix] [dryrun]" >&2
 			echo "See   : $GITHUB_URL_RELEASE/releases" >&2
 		fi
 		exit 1
@@ -94,7 +96,8 @@ realpath_bash() {
   [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
 }
 
-PROGRESS_FILE="$(realpath_bash "$VERSION.progress")"
+[ -n "$RUN_TYPE" ] && RUN_TYPE_SUFFIX=".$RUN_TYPE" || RUN_TYPE_SUFFIX=""
+PROGRESS_FILE="$(realpath_bash "$VERSION$RUN_TYPE_SUFFIX.progress")"
 
 
 ###
@@ -129,13 +132,28 @@ already_done() {
 wait_impl() {
 	TYPE="$1"
 	shift
+
+	SKIP_IN_DRYRUN=0
+	if [ "$1" = "--dryrun-skip" ]; then
+		SKIP_IN_DRYRUN=1
+		shift
+	fi
+
 	PROGRESS_OUTPUT=
 	if [[ "$1" = "[["* ]]; then
 		PROGRESS_OUTPUT="$1"
 		shift
 	fi
+
 	ACTION="$1"
 	shift
+
+	if [ "$RUN_TYPE" = "dryrun" ] && [ "$SKIP_IN_DRYRUN" = 1 ]; then
+		echo "[[$ACTION: skipped (dry run)]]" >&2
+		echo >&2
+		return
+	fi
+
 	if [ $(already_done "$ACTION" "$PROGRESS_OUTPUT") = 1 ]; then
 		if [ "$TYPE" = input ]; then
 			# Restore previous value
@@ -193,7 +211,7 @@ wait_input() {
 ###
 
 # Do this before any other `cd` commands
-wait_cmd \
+wait_cmd --dryrun-skip \
 	"[[release-banner: images/ClassicPress-release-banner-v$VERSION.png]]" \
 	'release-banner' \
 	magick images/ClassicPress-release-banner-template.png \
@@ -205,7 +223,7 @@ wait_cmd \
 	"images/ClassicPress-release-banner-v$VERSION.png"
 
 FORUMS_RELEASE_POST_URL=$(
-	wait_input 'release-changelog-forums-draft' \
+	wait_input --dryrun-skip 'release-changelog-forums-draft' \
 		'Prepare the release changelog on the forums:' \
 		'Previous releases   : https://forums.classicpress.net/c/announcements/release-notes' \
 		"Changelog URL       : $GITHUB_URL_CORE/compare/$LAST_VERSION+dev...$VERSION+dev" \
@@ -265,20 +283,20 @@ wait_cmd 'dev-release-finish' \
 	git flow $RELEASE_TYPE finish -u "$GPG_KEY_ID" \
 	$VERSION+dev -m 'Source code for release'
 
-wait_cmd 'dev-release-push' \
+wait_cmd --dryrun-skip 'dev-release-push' \
 	git push origin develop main $VERSION+dev
 
-wait_action 'dev-release-inspect-changelog' \
+wait_action --dryrun-skip 'dev-release-inspect-changelog' \
 	'Inspect the dev release changelog and diff:' \
 	"$GITHUB_URL_CORE/compare/$LAST_VERSION+dev...$VERSION+dev"
 
-wait_action 'dev-release-edit' \
+wait_action --dryrun-skip 'dev-release-edit' \
 	'Edit source release on GitHub:' \
 	"$GITHUB_URL_CORE/releases/new?tag=$VERSION%2Bdev" \
 	'Use the "Auto-generate release notes" button, but only COPY the resulting text' \
 	'and do not leave it there since this is the DEV repository! Edit as follows:' \
 	'' \
-    'Title:' \
+	'Title:' \
 	"  This is not the $VERSION release!" \
 	'Body:' \
 	"  Go here instead: $GITHUB_URL_RELEASE/releases/tag/$VERSION"
@@ -334,30 +352,30 @@ wait_cmd 'release-finish' \
 	git flow $RELEASE_TYPE finish -u "$GPG_KEY_ID" \
 	"$VERSION" -m 'Release'
 
-wait_cmd 'release-push' \
+wait_cmd --dryrun-skip 'release-push' \
 	git push origin develop main "$VERSION"
 
-wait_action 'release-inspect-changelog' \
+wait_action --dryrun-skip 'release-inspect-changelog' \
 	'Inspect the final release changelog and diff:' \
 	"$GITHUB_URL_RELEASE/compare/$LAST_VERSION...$VERSION"
 
-wait_cmd 'update-api-test' \
+wait_cmd --dryrun-skip 'update-api-test' \
 	ssh $CP_API_TEST \
 	/var/www/html/ClassicPress-APIs-Test/v1-upgrade-generator/update.sh
 
-wait_action 'release-test' \
+wait_action --dryrun-skip 'release-test' \
 	'Ask people to test the release now:' \
 	"$GITHUB_URL_RELEASE/archive/$VERSION.zip"
 
-wait_action 'update-staging-docs-site' \
+wait_action --dryrun-skip 'update-staging-docs-site' \
 	'Test updating the test docs site to the new version of ClassicPress using the migration plugin' \
 	"$GITHUB_URL_RELEASE/archive/$VERSION.zip"
 
-wait_action 'update-staging-docs' \
+wait_action --dryrun-skip 'update-staging-docs' \
 	'Test updating the staging docs site in a new shell:' \
 	"ssh $CP_PUBLIC /var/www/public/staging-docs.classicpress.net/bin/update-docs.sh"
 
-wait_action 'release-changelog-github' \
+wait_action --dryrun-skip 'release-changelog-github' \
 	'Edit release on GitHub:' \
 	"$GITHUB_URL_RELEASE/releases/new?tag=$VERSION" \
 	'Title:' \
@@ -378,34 +396,42 @@ See the **[release announcement post]($FORUMS_RELEASE_POST_URL)** on our forums 
 
 $GITHUB_URL_CORE/compare/$LAST_VERSION+dev...$VERSION+dev"
 
-wait_action 'release-changelog-forums-publish' \
+wait_action --dryrun-skip 'release-changelog-forums-publish' \
 	'Publish the release changelog on the forums:' \
 	"$FORUMS_RELEASE_POST_URL"
 
-wait_cmd 'update-api-production' \
+wait_cmd --dryrun-skip 'update-api-production' \
 	ssh $CP_API \
 	/var/www/html/ClassicPress-APIs/v1-upgrade-generator/update.sh
 
-wait_action 'release-announcement-zulip' \
+wait_action --dryrun-skip 'release-announcement-zulip' \
 	'Drop a note in the #announcements channel on Zulip:' \
 	"ClassicPress version \`$VERSION\` is now available for automatic updates and new installations: $FORUMS_RELEASE_POST_URL"
 
-wait_action 'release-changelog-forums-update-previous' \
+wait_action --dryrun-skip 'release-changelog-forums-update-previous' \
 	'https://forums.classicpress.net/c/announcements/release-notes' \
 	'Edit the post for the previous release to include this box at the top:' \
 	'**This is no longer the latest release of ClassicPress!**' \
 	'You can find the latest release at the top of the [Release Notes subforum](https://forums.classicpress.net/c/announcements/release-notes).'
 
-wait_action 'release-changelog-github-verify' \
+wait_action --dryrun-skip 'release-changelog-github-verify' \
 	'Double-check the GitHub post to make sure everything looks OK' \
 	'(all links work, etc.)' \
 	"$GITHUB_URL_RELEASE/releases/tag/$VERSION"
 
-wait_action 'update-docs-site' \
+wait_action --dryrun-skip 'update-docs-site' \
 	'Update the docs site to the new version of ClassicPress using update process'
 
-wait_action 'update-docs' \
+wait_action --dryrun-skip 'update-docs' \
 	'Update the main docs site in a new shell:' \
 	"ssh $CP_PUBLIC /var/www/public/docs.classicpress.net/bin/update-docs.sh"
+
+if [ "$RUN_TYPE" = dryrun ]; then
+	wait_action 'dryrun-git-reset-advice' \
+		'This was a DRY RUN. No changes were pushed or published, but local' \
+		'commits were made. To clean up, run:' \
+		"  cd \"$CP_CORE_PATH\" && git checkout develop && git reset --hard origin/develop" \
+		"  cd \"$CP_CORE_PATH\" && git checkout main && git reset --hard origin/main"
+fi
 
 echo "RELEASE COMPLETE!"
