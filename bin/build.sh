@@ -311,10 +311,8 @@ wait_cmd 'dev-nvm-use' \
 	nvm use
 wait_cmd 'dev-npm-install' \
 	npm install
-wait_cmd 'dev-npm-install-grunt' \
-	npm list grunt-cli || npm install -g grunt-cli
 wait_cmd 'release-build' \
-	CLASSICPRESS_RELEASE=true grunt build
+	CLASSICPRESS_RELEASE=true npm run grunt build
 
 wait_cmd '' \
 	cd "$CP_RELEASE_PATH"
